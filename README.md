@@ -23,7 +23,8 @@ PQCLibary pqcLibary = new PQCLibary("Algoritma_Etiketi");  // Anahtar Üretimi
 
 Örnek Kullanım:
 ```java
-PQCLibary pqcLibary = new PQCLibary("Kyber_512");  // Anahtar Üretimi
+PQCLibary pqcLibary = new PQCLibary("Kyber_512");  // Algoritma Belirleme
+pqcLibary.KeyGen() // Anahtar Üretimi
 EncapsulationModel enc = pqcLibary.Encapsulation(pqcLibary.pk); //Paketleme
 byte[] sharedSecretKey = pqcLibary.Decapsulation(enc.getCipherText(),pqcLibary.sk); // Paket Çözme
  ```

@@ -1,9 +1,16 @@
 package com.sak.pqclibrary;
 
+import static com.sak.pqclibrary.ParameterSets.FIRE_SABER;
+import static com.sak.pqclibrary.ParameterSets.KYBER1024;
+import static com.sak.pqclibrary.ParameterSets.KYBER512;
+import static com.sak.pqclibrary.ParameterSets.KYBER768;
+import static com.sak.pqclibrary.ParameterSets.LIGHT_SABER;
+import static com.sak.pqclibrary.ParameterSets.NTRU509;
+import static com.sak.pqclibrary.ParameterSets.NTRU677;
+import static com.sak.pqclibrary.ParameterSets.NTRU821;
+import static com.sak.pqclibrary.ParameterSets.SABER;
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
-
 import com.sak.pqclibrary.kyber.kyberencryption.provider.Kyber1024KeyPair;
 import com.sak.pqclibrary.kyber.kyberencryption.provider.Kyber512KeyPair;
 import com.sak.pqclibrary.kyber.kyberencryption.provider.Kyber768KeyPair;
@@ -19,65 +26,56 @@ import com.sak.pqclibrary.saber.models.Keys;
 public class PQCLibary {
     byte[] pk;
     byte[] sk;
-    byte[] cipherText;
-    byte[] ssk1;
     byte[] rnd1 = new byte[KyberParams.paramsSymBytes];
     int algorithmType;
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public PQCLibary(String algorithmName) {
-        String[] a = algorithmName.split("_");
+    public PQCLibary(int PARAMETER_SETS) {
+
         Keys keys = null;
 
-        if (a.length==1){
-            this.algorithmType= 1;
-            new Params(3,8,4);
-            keys = Kem.crypto_kem_keypair();
-        }
-        else if(a.length == 2){
-            if(a[0].equalsIgnoreCase("Saber")){
-                if(a[1].equalsIgnoreCase("Light")){
-
-                    new Params(2,10,3);
-                }
-                else if(a[1].equalsIgnoreCase("Fire")){
-                    new Params(4,6,6);
-                }
-                this.algorithmType = 1;
+        switch (PARAMETER_SETS){
+            case LIGHT_SABER:
+                this.algorithmType= 1;
+                new Params(2,10,3);
                 keys = Kem.crypto_kem_keypair();
-            }
-            else if(a[0].equalsIgnoreCase("NTRU")){
-                if(a[1].equalsIgnoreCase("509")){
-
-                    new com.sak.pqclibrary.ntru.Params(509);
-
-                }
-                else if(a[1].equalsIgnoreCase("677")){
-                    new com.sak.pqclibrary.ntru.Params(677);
-                }
-                else if(a[1].equalsIgnoreCase("821")){
-                    new com.sak.pqclibrary.ntru.Params(821);
-                }
+                break;
+            case SABER:
+                this.algorithmType= 1;
+                new Params(3,8,4);
+                keys = Kem.crypto_kem_keypair();
+                break;
+            case FIRE_SABER:
+                this.algorithmType= 1;
+                new Params(4,6,6);
+                keys = Kem.crypto_kem_keypair();
+                break;
+            case KYBER512:
+                keys  = Kyber512KeyPair.generateKeys512();
+                this.algorithmType = 3;
+                break;
+            case KYBER768:
+                keys  = Kyber768KeyPair.generateKeys768();
+                this.algorithmType = 4;
+                break;
+            case KYBER1024:
+                keys = Kyber1024KeyPair.generateKeys1024();
+                this.algorithmType = 5;
+                break;
+            case NTRU509:
+                new com.sak.pqclibrary.ntru.Params(509);
                 this.algorithmType = 2;
                 keys = OWCPA.owcpa_keypair();
-            }
-
-            else if(a[0].equalsIgnoreCase("Kyber")){
-                KyberKeyPair kk  =null;
-
-                if(a[1].equalsIgnoreCase("512")){
-                    kk  = Kyber512KeyPair.generateKeys512();
-                    this.algorithmType = 3;
-                }
-                else if(a[1].equalsIgnoreCase("768")){
-                    kk  = Kyber768KeyPair.generateKeys768();
-                    this.algorithmType = 4;
-                }
-                else if(a[1].equalsIgnoreCase("1024")){
-                    kk  = Kyber1024KeyPair.generateKeys1024();
-                    this.algorithmType = 5;
-                }
-                keys = new Keys(kk.getKyberPublicKey(),kk.getKyberPrivateKey());
-            }
+                break;
+            case NTRU677:
+                new com.sak.pqclibrary.ntru.Params(677);
+                this.algorithmType = 2;
+                keys = OWCPA.owcpa_keypair();
+                break;
+            case NTRU821:
+                new com.sak.pqclibrary.ntru.Params(821);
+                this.algorithmType = 2;
+                keys = OWCPA.owcpa_keypair();
+                break;
         }
         this.pk = keys.getPk();
         this.sk = keys.getSk();
@@ -90,23 +88,6 @@ public class PQCLibary {
     public byte[] getSk() {
         return sk;
     }
-
-    public byte[] getCipherText() {
-        return cipherText;
-    }
-
-    public byte[] getSsk1() {
-        return ssk1;
-    }
-
-    public byte[] getRnd1() {
-        return rnd1;
-    }
-
-    public int getAlgorithmType() {
-        return algorithmType;
-    }
-
     public EncapsulationModel Encapsulation(byte[] pk){
         EncapsulationModel enc;
         switch (algorithmType){

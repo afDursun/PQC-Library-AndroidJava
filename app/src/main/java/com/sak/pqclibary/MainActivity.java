@@ -8,8 +8,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.sak.pqclibrary.PQCLibary;
+import com.sak.pqclibrary.ParameterSets;
 import com.sak.pqclibrary.saber.models.EncapsulationModel;
 import com.sak.pqclibrary.saber.utils.Utils;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,11 +24,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PQCLibary pqcLibary = new PQCLibary("Saber_Light");
-        EncapsulationModel enc = pqcLibary.Encapsulation(pqcLibary.getPk());
-        byte[] sharedSecretKey = pqcLibary.Decapsulation(enc.getCipherText(),pqcLibary.getSk());
+
+        PQCLibary pqc = new PQCLibary(ParameterSets.FIRE_SABER);
+        EncapsulationModel enc = pqc.Encapsulation(pqc.getPk());
+        byte[] sharedSecretKey = pqc.Decapsulation(enc.getCipherText(),pqc.getSk());
+
+
         Log.d("AFD-AFD", Utils.hex(sharedSecretKey));
         Log.d("AFD-AFD", Utils.hex(enc.getSs()));
+        Log.d("AFD-AFD", Arrays.equals(sharedSecretKey, enc.getSs()) + "");
 
 
 

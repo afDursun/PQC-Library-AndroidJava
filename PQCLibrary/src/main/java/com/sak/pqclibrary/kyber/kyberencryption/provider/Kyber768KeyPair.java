@@ -6,14 +6,16 @@ import androidx.annotation.RequiresApi;
 import com.github.aelstad.keccakj.fips202.SHA3_256;
 import com.sak.pqclibrary.kyber.kyberencryption.provider.kyber.Indcpa;
 import com.sak.pqclibrary.kyber.kyberencryption.provider.kyber.KyberParams;
+import com.sak.pqclibrary.saber.models.Keys;
+
 import java.security.*;
 import java.util.ArrayList;
 
 public final class Kyber768KeyPair {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static KyberKeyPair generateKeys768( ) {
-        KyberKeyPair keyPair = null;
+    public static Keys generateKeys768( ) {
+        Keys keys = null;
         KyberKeySize kyberKeySize = KyberKeySize.KEY_512;
         SecureRandom random = new SecureRandom();
         try{
@@ -45,10 +47,10 @@ public final class Kyber768KeyPair {
             System.arraycopy(pkh, 0, privateKeyFixedLength, offsetEnd, pkh.length);
             offsetEnd += pkh.length;
             System.arraycopy(rnd, 0, privateKeyFixedLength, offsetEnd, rnd.length);
-            keyPair = new KyberKeyPair(packedPublicKey, privateKeyFixedLength);
+            keys = new Keys(packedPublicKey, privateKeyFixedLength);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return keyPair;
+        return keys;
     }
 }

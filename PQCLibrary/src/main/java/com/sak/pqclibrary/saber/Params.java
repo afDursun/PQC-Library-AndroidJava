@@ -33,7 +33,7 @@ public class Params {
     public  static int CRYPTO_BYTES = SABER_KEYBYTES;
     public  static int SABER_SECRETKEYBYTES = (SABER_INDCPA_SECRETKEYBYTES + SABER_INDCPA_PUBLICKEYBYTES + SABER_HASHBYTES + SABER_KEYBYTES);
     public  static int h2  = ((1 << (SABER_EP - 2)) - (1 << (SABER_EP - SABER_ET - 1)) + (1 << (SABER_EQ - SABER_EP - 1)));
-    public  static boolean isRandom = false;
+    public  static boolean isRandom = true;
 
     public Params(int L, int MU,int ET) {
         SABER_L = L;

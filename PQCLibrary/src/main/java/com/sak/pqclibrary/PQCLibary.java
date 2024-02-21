@@ -88,7 +88,7 @@ public class PQCLibary {
     public byte[] getSk() {
         return sk;
     }
-    public EncapsulationModel Encapsulation(byte[] pk){
+    public EncapsulationModel encapsulation(byte[] pk){
         EncapsulationModel enc;
         switch (algorithmType){
             case 1:
@@ -114,7 +114,7 @@ public class PQCLibary {
 
 
 
-    public byte[] Decapsulation(byte[] ct , byte[] sk){
+    public byte[] decapsulation(byte[] ct , byte[] sk){
         byte[] ssk2 ;
         switch (algorithmType){
             case 1:

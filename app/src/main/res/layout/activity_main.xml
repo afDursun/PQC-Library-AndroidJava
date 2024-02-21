@@ -7,4 +7,26 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:text="KeyGen"
+        android:id="@+id/btn1"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:text="Enc"
+        android:id="@+id/btn2"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:text="Dec"
+        android:id="@+id/btn3"
+        android:layout_height="wrap_content"/>
+
+
 </LinearLayout>

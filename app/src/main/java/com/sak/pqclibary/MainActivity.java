@@ -24,14 +24,18 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     public static int NTESTS = 100;
-    public static int C = 0;
+    public static int C = 10;
+
+    boolean isRunning = false;
+    int SCHEMES = ParameterSets.LIGHT_SABER;
+
 
     PQCLibary pqc;
     EncapsulationModel enc;
     byte[] sharedSecretKey;
-
-    long start,end,e;
+    long start, end, e;
     long[] array = new long[NTESTS];
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,48 +46,50 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.submit(new Runnable() {
-                    public void run() {
-                        for (int i = 0 ; i < NTESTS + C ;  i++){
+                if(isRunning){
+                    for (int i = 0; i < NTESTS + C; i++) {
+                        if (i < C) {
+                            pqc = new PQCLibary(SCHEMES);
+                        } else {
+                            start = System.nanoTime();
+                            pqc = new PQCLibary(SCHEMES);
+                            end = System.nanoTime();
 
-                            if(i < C){
-                                pqc = new PQCLibary(ParameterSets.LIGHT_SABER);
-                            }
-                            else{
-                                start = System.nanoTime();
-                                pqc = new PQCLibary(ParameterSets.LIGHT_SABER);
-                                end = System.nanoTime();
-
-                                e  = end - start;
-                                array[i - C] = e;
-                            }
+                            e = end - start;
+                            array[i - C] = e;
                         }
                     }
-                });
-                Log.d("AFD-AFD keyGen: " , avg(array)/1000 + "");
+                    Log.d("AFD-AFD keyGen: ", avg(array) / 1000 + "");
+                }
+                else
+                {
+                    pqc = new PQCLibary(SCHEMES);
+                }
 
             }
         });
         findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isRunning){
+                    for (int i = 0; i < NTESTS + C; i++) {
+                        if (i < C) {
+                            enc = pqc.encapsulation(pqc.getPk());
+                        } else {
+                            start = System.nanoTime();
+                            enc = pqc.encapsulation(pqc.getPk());
+                            end = System.nanoTime();
 
-                for (int i = 0 ; i < NTESTS + C ;  i++){
-                    if(i < C){
-                        enc = pqc.encapsulation(pqc.getPk());
+                            e = end - start;
+                            array[i - C] = e;
+                        }
+
                     }
-                    else{
-                        start = System.nanoTime();
-                        enc = pqc.encapsulation(pqc.getPk());
-                        end = System.nanoTime();
-
-                        e  = end - start;
-                        array[i - C] = e;
-                    }
-
+                    Log.d("AFD-AFD Encapsulation: ", avg(array) / 1000 + "");
                 }
-                Log.d("AFD-AFD Encapsulation: " , avg(array)/1000  + "");
+                else{
+                    enc = pqc.encapsulation(pqc.getPk());
+                }
             }
         });
 
@@ -91,27 +97,29 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (int i = 0 ; i < NTESTS + C ;  i++){
-                    if(i < C){
-                        sharedSecretKey = pqc.decapsulation(enc.getCipherText(),pqc.getSk());
-                    }
-                    else{
-                        start = System.nanoTime();
-                        sharedSecretKey = pqc.decapsulation(enc.getCipherText(),pqc.getSk());
-                        end = System.nanoTime();
+                if (isRunning){
+                    for (int i = 0; i < NTESTS + C; i++) {
+                        if (i < C) {
+                            sharedSecretKey = pqc.decapsulation(enc.getCipherText(), pqc.getSk());
+                        } else {
+                            start = System.nanoTime();
+                            sharedSecretKey = pqc.decapsulation(enc.getCipherText(), pqc.getSk());
+                            end = System.nanoTime();
 
-                        e  = end - start;
-                        array[i - C] = e;
-                    }
+                            e = end - start;
+                            array[i - C] = e;
+                        }
 
+                    }
+                    Log.d("AFD-AFD Decapsulation: ", avg(array) / 1000 + "");
                 }
-                Log.d("AFD-AFD Decapsulation: " , avg(array)/1000 + "");
+                else{
+                    sharedSecretKey = pqc.decapsulation(enc.getCipherText(), pqc.getSk());
+                }
             }
         });
-
     }
-
-    public static double avg(long[] array){
+    public static double avg(long[] array) {
         int sum = 0;
         for (long l : array) {
             sum += l;
